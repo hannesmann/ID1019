@@ -85,6 +85,9 @@ defmodule Derivative do
     def simplify_expr({ :mul, _, { :num, 0 } }) do { :num, 0 } end
     def simplify_expr({ :mul, { :num, 0 }, _ }) do { :num, 0 } end
 
+    def simplify_expr({ :mul, a, { :num, 1 } }) do simplify_expr(a) end
+    def simplify_expr({ :mul, { :num, 1 }, a }) do simplify_expr(a) end
+
     def simplify_expr({ :div, a, { :num, 1 } }) do simplify_expr(a) end
 
     def simplify_expr({ :pow, a, { :num, 1 } }) do simplify_expr(a) end
