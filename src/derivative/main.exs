@@ -68,15 +68,15 @@ defmodule Derivative do
     def simplify_expr({ :pow, { :num, a }, { :num, b } }) do { :num, a ** b } end
 
     # Constant folding inside parentheses
-    def simplify_expr({ :add, { :num, a }, { :add, { :num, b }, c } }) do { :add, { :num, a + b }, simplify_expr(c) } end
-    def simplify_expr({ :add, { :add, { :num, b }, c }, { :num, a } }) do { :add, { :num, a + b }, simplify_expr(c) } end
-    def simplify_expr({ :add, { :num, a }, { :add, c, { :num, b } } }) do { :add, { :num, a + b }, simplify_expr(c) } end
-    def simplify_expr({ :add, { :add, c, { :num, b } }, { :num, a } }) do { :add, { :num, a + b }, simplify_expr(c) } end
+    def simplify_expr({ :add, { :num, a }, { :add, { :num, b }, c } }) do simplify({ :add, { :num, a + b }, simplify_expr(c) }) end
+    def simplify_expr({ :add, { :add, { :num, b }, c }, { :num, a } }) do simplify({ :add, { :num, a + b }, simplify_expr(c) }) end
+    def simplify_expr({ :add, { :num, a }, { :add, c, { :num, b } } }) do simplify({ :add, { :num, a + b }, simplify_expr(c) }) end
+    def simplify_expr({ :add, { :add, c, { :num, b } }, { :num, a } }) do simplify({ :add, { :num, a + b }, simplify_expr(c) }) end
 
-    def simplify_expr({ :mul, { :num, a }, { :mul, { :num, b }, c } }) do { :mul, { :num, a * b }, simplify_expr(c) } end
-    def simplify_expr({ :mul, { :mul, { :num, b }, c }, { :num, a } }) do { :mul, { :num, a * b }, simplify_expr(c) } end
-    def simplify_expr({ :mul, { :num, a }, { :mul, c, { :num, b } } }) do { :mul, { :num, a * b }, simplify_expr(c) } end
-    def simplify_expr({ :mul, { :mul, c, { :num, b } }, { :num, a } }) do { :mul, { :num, a * b }, simplify_expr(c) } end
+    def simplify_expr({ :mul, { :num, a }, { :mul, { :num, b }, c } }) do simplify({ :mul, { :num, a * b }, simplify_expr(c) }) end
+    def simplify_expr({ :mul, { :mul, { :num, b }, c }, { :num, a } }) do simplify({ :mul, { :num, a * b }, simplify_expr(c) }) end
+    def simplify_expr({ :mul, { :num, a }, { :mul, c, { :num, b } } }) do simplify({ :mul, { :num, a * b }, simplify_expr(c) }) end
+    def simplify_expr({ :mul, { :mul, c, { :num, b } }, { :num, a } }) do simplify({ :mul, { :num, a * b }, simplify_expr(c) }) end
 
     # Statements with no effects
     def simplify_expr({ :add, a, { :num, 0 } }) do simplify_expr(a) end
