@@ -1,0 +1,129 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{minted}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{
+    \textbf{Derivative}
+}
+\author{Hannes Mann}
+\date{2023-01-22}
+
+\maketitle
+
+\section*{Introduction}
+
+This is a report for the first assignment in the course ID1019 Programming II.
+In this assignment, a program should be created that can take the derivative of a mathematical expression and present it in a simplified form.
+
+The implementation was done in Elixir. No build system has been set up at the time the report is written, but the script can be executed with \mintinline{elixir}{elixir main.exs}.
+
+The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/derivative}{GitHub}.
+
+\section*{Implementing differentiation rules}
+
+For the program to be able to manipulate mathematical expressions it needs to represent the expression in memory.
+Working with strings would get complicated very quickly so a tuple type was created that can hold all necessary operations and values.
+
+The operations were chosen based on how they apply to derivatives, while $x^n$ can be represented as $x*x*x*x\dots$ and $cos(x)$ can be represented as $sin(90-x)$ it's useful to
+separate them because they have different behavior in the program.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+@type literal() :: { :num, number() } | { :var, atom() }
+
+@type expr() ::
+  # a + b
+  { :add, expr(), expr() } |
+  # a * b
+  { :mul, expr(), expr() } |
+  # a / b
+  { :div, expr(), expr() } |
+  # a ^ n
+  { :pow, expr(), { :num, number() } } |
+  # ln(a)
+  { :ln, literal() } |
+  # sin(a)
+  { :sin, literal() } |
+  # cos(a)
+  { :cos, literal() } |
+  literal()
+\end{minted}
+
+The program uses pattern matching on the operation type to figure out what differentiation rule to use.
+Several functions are defined with the same name and Elixir will choose the right one depending on the type.
+
+If we are deriving with respect to $x$ the program also needs to differentiate between the variable $x$ and other variables (which are assumed to be constant).
+The derivative function is passed the name of the variable so that if the variable is $x$, the result is 1, otherwise the result is 0.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+  # The variable in the expression is the same variable as v
+  # d/dv v = 1
+  def deriv({ :var, v }, v) do { :num, 1 } end
+  # The variable in the expression is an unrelated constant
+  # d/dv c = 0
+  def deriv({ :var, _ }, _) do { :num, 0 } end
+\end{minted}
+
+Some functions will call \mintinline{elixir}{deriv} recursively which is how the program is able to derive an expression consisting of several terms.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+  def deriv({ :add, e1, e2 }, v) do
+    { :add, deriv(e1, v), deriv(e2, v) }
+  end
+
+  # Product rule
+  def deriv({ :mul, e1, e2 }, v) do
+    { :add, { :mul, deriv(e1, v), e2 }, { :mul, e1, deriv(e2, v) } }
+  end
+
+  # Quotient rule
+  def deriv({ :div, e1, e2 }, v) do
+    { :div, { :add, { :mul, deriv(e1, v), e2 }, { :mul, { :mul, e1, deriv(e2, v) }, { :num, -1 } } }, { :pow, e2, { :num, 2 } } }
+  end
+\end{minted}
+
+\section*{Simplifying expressions}
+
+When calling \mintinline{elixir}{deriv} on expressions consisting of several terms the program will often output an expression consisting of ''useless'' terms like adding zero or multiplying $x$ by zero.
+This is because the function never eliminates expressions without side effects. It only goes through each term and derives them in order.
+To simplify expressions I defined four rules:
+\begin{itemize}
+	\item \textbf{Constant folding}: Any operation consisting of two constant terms can be evaluated and transformed into \mintinline{elixir}{{:num, n}} (example: $2+3 = 5$, $2^3 = 8$).
+	\item \textbf{Constant folding inside parentheses}: The same rule can be applied if we have one constant outside parentheses and one inside (example: $2+(3+x)=5+x$, $2*(3*x) = 6*2x$).
+  \item \textbf{Statements without side effects}: Addition by zero, multiplication by one, division by one, $x$ to the power of one.
+  \item \textbf{Statements that always evaluate to the same value}: Multiplication by zero, $x$ to the power of zero, zero to the power of $x$.
+\end{itemize}
+
+This covers most (but surely not all) cases where an expression is unnecessarily complicated.
+These four rules are easy to implement with pattern matching with Elixir,
+but to solve all cases it seems the program would have to run multiple passes and keep track of
+constants and variables on a stack.
+
+\section*{Result}
+
+The program includes some example expressions to test the derivative and simplification function.
+Expressions are printed without any parentheses and the program cannot know implicitly when to insert them
+since this would require writing code that has knowledge of operator precedence and that was not the focus of this exercise.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+Expression: 2*x^3
+Derivative: 6*x^2
+Expression: sin(x)
+Derivative: cos(x)
+
+# From course example
+Expression: 4*x^2+3*x+42
+Derivative: 8*x+3
+
+# x^0.5 is printed as sqrt(x)
+Expression: sqrt(x)
+Derivative: 0.5*x^-0.5
+\end{minted}
+
+\end{document}
