@@ -44,7 +44,7 @@ end
 n_str = List.first(System.argv())
 
 if !n_str do
-  IO.puts("Specify the initial size of the map")
+  IO.puts("Specify the number of operations to execute")
 else
   {n, _} = Integer.parse(n_str)
   ls = [16, 32, 64, 128, 256, 512, 1024, 2*1024, 4*1024, 8*1024]
