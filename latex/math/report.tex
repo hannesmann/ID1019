@@ -1,0 +1,163 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{minted}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{
+    \textbf{A math evaluator in Elixir}
+}
+\author{Hannes Mann}
+\date{2023-02-03}
+
+\maketitle
+
+\section*{Introduction}
+
+This is a report for the third assignment in the course ID1019 Programming II.
+In this assignment, a program should be created that can interpret and evaluate a math expression. Variables will be defined by the user and resolved during evaluation.
+
+The implementation was done in Elixir. No build system has been set up but the script can be executed with \mintinline{elixir}{elixir main.exs}.
+
+The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/math}{GitHub}.
+
+\section*{Implementing the evaluator}
+
+\subsection*{Environment}
+
+The environment contains a mapping of variables to their assigned values. The user provides either a map or an array with key-value pairs which are resolved by the evaluator when a variable is found.
+
+For simplicity and speed the included map module in Elixir was used to implement the environment.
+The environment provides an interface to allow for alternative backends (like a list or the tree from the previous assignment), it's not bound to one implementation.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+defmodule Environment do
+  def new() do %{} end
+  def new(bindings) when is_map(bindings) do bindings end
+
+  def new(bindings) when is_list(bindings) do
+    Enum.reduce(bindings, %{}, fn ({k, v}, map) -> Map.put(map, k, v) end)
+  end
+
+  def find(env, key) do env[key] end
+end
+\end{minted}
+
+\subsection*{Expressions}
+
+Expressions are represented by a tuple with two or three values: An atom specifying the type of the expression and the arguments for the value or operation.
+
+Data values can be either integers, rational numbers or variables.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+@type literal() ::
+  { :num, number() } |
+  { :q, number(), number() } |
+  { :var, atom() }
+\end{minted}
+
+The available operations are addition, subtraction, multiplication and division. These expressions, when evaluated, resolve into different expressions which are data values.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+@type expr() ::
+  {:add, expr(), expr()} |
+  {:sub, expr(), expr()} |
+  {:mul, expr(), expr()} |
+  {:div, expr(), expr()} |
+  literal()
+\end{minted}
+
+\subsection*{Pattern matching}
+
+The evaluator uses pattern matching to recursively evaluate an expression and its subexpressions.
+To make the implementation as simple as possible, all integers and variables are converted into rational numbers.
+A variable will always resolve into an integer or rational number, and an integer can always be expanded into a rational number of the form $n \Longleftrightarrow \frac{n}{1}$.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def eval({:num, n}, _) do {:q, n, 1} end
+def eval({:var, k}, env) do
+  eval(Environment.find(env, k), env)
+end
+\end{minted}
+
+Since we know all expressions will eventually be converted into rational numbers, we only need to provide a single implementation of every operation and we know the result of evaluating a complete math expression will be a single rational number.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def eval({:operation, {:q, a, b}, {:q, c, d}}, env) do
+  # Do operation on rational numbers
+end
+
+def eval({:operation, a, b}, env) do
+  # The function only needs to "pass through" to the real implementation
+  eval({:operation, eval(a, env), eval(b, env)}, env)
+end
+\end{minted}
+
+\subsection*{Operations}
+
+\begin{itemize}
+	\item \textbf{Addition}: Implemented by the formula: $\frac{a}{b} + \frac{c}{d} = \frac{(a*d)+(c*b)}{b*d}$.
+  This will of course create intermediate results with large numbers (example:  $\frac{50}{10} + \frac{24}{4} = \frac{440}{40}$)
+  but this doesn't matter since the final result will be simplifed before being shown to the user.
+  \item \textbf{Subtraction}: Implemented with addition: $\frac{a}{b} - \frac{c}{d} = \frac{a}{b} + \frac{-c}{d}$.
+  \item \textbf{Multiplication}: Implemented by the formula: $\frac{a}{b} * \frac{c}{d} = \frac{a*c}{b*d}$.
+  \item \textbf{Division}: Implemented with multiplication: $\frac{\frac{a}{b}}{\frac{c}{d}} = \frac{a}{b} * \frac{d}{c}$.
+\end{itemize}
+
+\subsection*{Simplification}
+
+The final step in evaluation is to take the finished result and simplify it (if necessary).
+This is implemented by first taking the final rational $p/q$ and finding the greatest common divisor of $p$ and $q$.
+Both terms are then divided by the GCD. The program uses \mintinline{elixir}{Integer.gcd} from the Elixir standard library but this function
+could also easily be manually implemented with Euclid's algorithm or some other clever algorithm.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+gcd = Integer.gcd(a, b)
+# Kernel.div necessary for integer division
+reduced = {:q, Kernel.div(a, gcd), Kernel.div(b, gcd)}
+\end{minted}
+
+After the number has been divided as much as possible it's determinted if it can be represented as a integer or not.
+If the denominator is 1, the result is an integer, otherwise the result is a rational number.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+case reduced do
+  {_, n, 1} -> {:num, n}
+  _ -> reduced
+end
+\end{minted}
+
+\section*{Results}
+
+The test program will print out the result of evaluating three expressions:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# Expression
+{:div, {:mul, {:num, 5}, {:num, 2}}, {:num, 5645}}
+# Environment
+%{}
+# Result
+2/1129
+
+# Expression
+{:mul, {:num, 5}, {:var, :x}}
+# Environment
+%{x: {:num, 10}}
+# Result
+50
+
+# Example from course material
+# Expression
+{:add, {:add, {:mul, {:num, 2}, {:var, :x}}, {:num, 3}}, {:q, 1, 2}}
+# Environment
+%{x: {:num, 80}}
+# Result
+327/2
+\end{minted}
+
+\end{document}
