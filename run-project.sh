@@ -25,7 +25,7 @@ function all_pdflatex {
   rm -Rf output
   mkdir -p output
 
-  for d in latex/*/; do printf "${bold}$(basename $d).pdf${normal}" && build_pdflatex "$(basename $d)"; done
+  for d in latex/*/; do echo "${bold}$(basename $d).pdf${normal}" && build_pdflatex "$(basename $d)"; done
 }
 
 echo "    build_tectonic [name]"
@@ -41,7 +41,7 @@ function all_tectonic {
   rm -Rf output
   mkdir -p output
 
-  for d in latex/*/; do printf "${bold}$(basename $d).pdf${normal}" && build_tectonic "$(basename $d)"; done
+  for d in latex/*/; do echo "${bold}$(basename $d).pdf${normal}" && build_tectonic "$(basename $d)"; done
 }
 
 echo ""
