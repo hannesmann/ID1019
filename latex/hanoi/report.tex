@@ -69,7 +69,7 @@ The base case matches on $n=0$ and will of course return an empty list since no 
 
 Looking at the function we can figure out how many moves will be needed to move a tower of size $n$.
 First we make $1$ move, then $2$ moves, then $2*2$ moves, then $2*2*2$ moves, then $\ldots$ until we get to $n=0$ which makes no moves.
-This gives us an infinite series $2^0 + 2^1 + \ldots + 2^{n-2} + 2^{n-1}$ where terms are successive powers of two.
+This gives us an geometric series $2^0 + 2^1 + \ldots + 2^{n-2} + 2^{n-1}$ where terms are successive powers of two.
 This means the number of moves needed should always be $2^n - 1$.
 
 \section*{Results}
