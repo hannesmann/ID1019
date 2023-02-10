@@ -20,8 +20,8 @@ defmodule Recursion do
   def odd([]) do [] end
   def odd([head | tail]) do
     case head do
-      head when rem(head, 2) == 1 -> [true | odd(tail)]
-      _ -> [false | odd(tail)]
+      head when rem(head, 2) == 1 -> [head | odd(tail)]
+      _ -> odd(tail)
     end
   end
 end

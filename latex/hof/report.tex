@@ -1,0 +1,147 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{minted}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{
+    \textbf{Higher-order functions}
+}
+\author{Hannes Mann}
+\date{2023-02-10}
+
+\maketitle
+
+\section*{Introduction}
+
+This is a report for the second higher-grade assignment in the course ID1019 Programming II.
+In this assignment, the higher-order functions "map", "reduce" and "filter" should be implemented in Elixir along with some example functions that make use of them.
+
+A bash script is included in the repository that can be used to run the program: \mintinline{text}{./run-project.sh hof}.
+
+The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/hof}{GitHub}.
+
+\section*{The Map function}
+
+The first function that will be looked at is \mintinline{text}{map(list, f(elem))}. This function is considered a higher-order function because it takes another function as an argument.
+It works by applying the function \mintinline{text}{f} on every element in the list and returning a new list with the transformed values.
+
+We can start by looking at a function that could be trivially implemented with \mintinline{text}{map}:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def double([]) do [] end
+
+def double([head | tail]) do
+  [head * 2 | double(tail)]
+end
+\end{minted}
+
+This function uses recursion to multiply all numbers in the list by two.
+Depending on the programming language \mintinline{text}{double} could also modify the list in-place using a loop but in Elixir the recursive approach will work best.
+
+Translating \mintinline{text}{double} to \mintinline{text}{map} is done by taking out the statement \mintinline{text}{head * 2}
+and providing a function that applies the transformation to \mintinline{text}{map}. Iterating through the list will be done by \mintinline{text}{map}.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# Equivalent to double(list)
+map(list, fn x -> x * 2)
+\end{minted}
+
+Since our original \mintinline{text}{double} function was really only a specialized version of \mintinline{text}{map} we can actually modify it slightly to implement \mintinline{text}{map} in Elixir.
+We call the specified function with the syntax \mintinline{text}{f.(head)} to say that we want to treat the variable \mintinline{text}{f} as a function, rather than trying to call a function called \mintinline{text}{f} in the module.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# Call it apply_to_all, transform_all, map, etc...
+def apply_to_all([], _) do [] end
+
+def apply_to_all([head | tail], f) do
+  [f.(head) | apply_to_all(tail)]
+end
+\end{minted}
+
+The Map function is very useful because it allows easy parallelization of the program.
+We know that every element in the list is independent, the "current" element does not depend on the "previous" element.
+We could, for example, divide the list into $n$ separate lists (assuming we have $n$ threads on our computer) and run the specified function on these lists concurrently, only rejoining them at the very end.
+
+\section*{The Filter function}
+
+The second function that will be looked at is \mintinline[breaklines]{text}{filter(list, f(elem))}.
+This is similar to Map but instead of transforming an element we now decide if the element should be removed from the list.
+The function \mintinline[breaklines]{text}{f} will always return a boolean which is what determines if the element should be kept or removed.
+
+An example of a function that can be implemented with \mintinline[breaklines]{text}{filter} is only keeping the odd numbers in a list:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def odd([]) do [] end
+def odd([head | tail]) do
+  case head do
+    head when rem(head, 2) == 1 -> [head | odd(tail)]
+    _ -> odd(tail)
+  end
+end
+\end{minted}
+
+Here the condition is \mintinline[breaklines]{elixir}{rem(head,2) == 1} so using \mintinline[breaklines]{text}{filter} would give us:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# Equivalent to odd(list)
+filter(list, fn x -> rem(x, 2) == 1)
+\end{minted}
+
+Same as with \mintinline[breaklines]{text}{map} our function is a specialized version of \mintinline[breaklines]{text}{filter}, so making some changes gives us this:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def filter([], _) do [] end
+def filter([head | tail], f) do
+  if f.(head) do [head | filter(tail, f)] else filter(tail, f) end
+end
+\end{minted}
+
+Filter is useful for the same reason as Map, the condition for each element doesn't depend on any other element so it allows easy parallelization.
+
+\section*{The Reduce function}
+
+The last function that will be looked at is \mintinline[breaklines]{text}{reduce(list, base, f(elem, acc))}.
+This function repeatedly calls \mintinline[breaklines]{text}{f} on the elements in a list, with \mintinline[breaklines]{text}{acc} being the value of the the previous function invocation.
+If this is the first function invocation, the base value is used as a starting point for the accumulator.
+
+One of the most obvious examples of where this would be useful is taking the sum of all the values in a list:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def sum([]) do 0 end
+def sum([head | tail]) do head + sum(tail) end
+\end{minted}
+
+This function actually shows one of the problems we have to solve with \mintinline[breaklines]{text}{reduce}: Do we add the head at the beginning or the end of the statement?
+For addition this doesn't actually make a difference, since it's commutative, but if we wrote for example \mintinline{elixir}{head ** sum(tail)} it would return a different value if we
+changed the order.
+
+This gives us two different ways to solve the problem: Folding from the right and folding from the left. Folding from the right means we start at the last element and accumulate from there:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def fold_right([], base, _) do base end
+def fold_right([head | tail], base, f) do
+  f.(head, fold_right(tail, base, f))
+end
+\end{minted}
+
+Folding from the left means we start at the first element but it's a little trickier to implement.
+What we do is call the function on the first element with our base value.
+Then, we treat the result of that function as the new base value and reduce again on the remaining part of the list:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def fold_left([], base, _) do base end
+def fold_left([head | tail], base, f) do
+  fold_left(tail, f.(head, base), f)
+end
+\end{minted}
+
+Reduce is very versatile. For example, we can implement Map by starting out with an empty list and accumulating a final list with the transformed values,
+or we can implement Filter by starting out with an empty list and accumulating a final list with only the values that weren't filtered.
+
+\end{document}
