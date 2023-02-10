@@ -47,27 +47,33 @@ function all_tectonic {
 echo ""
 echo "  ${bold}Elixir:${normal}"
 
-echo "    derivative"
+echo "    derivative (Derivative calculator)"
 function derivative {
   cd src/derivative
 	time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
 }
 
-echo "    environment"
+echo "    environment (List and tree map)"
 function environment {
   cd src/environment
 	time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
 }
 
-echo "    math"
+echo "    math (Math evaluator)"
 function math {
   cd src/math
 	time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
 }
 
-echo "    hanoi"
+echo "    hanoi (Recursive Towers of Hanoi)"
 function hanoi {
   cd src/hanoi
+	time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
+}
+
+echo "    hof (Higher-order functions)"
+function hof {
+  cd src/hof
 	time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
 }
 
