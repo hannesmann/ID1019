@@ -1,0 +1,124 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{minted}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{
+    \textbf{Recursive Towers of Hanoi}
+}
+\author{Hannes Mann}
+\date{2023-02-10}
+
+\maketitle
+
+\section*{Introduction}
+
+This is a report for the fourth assignment in the course ID1019 Programming II.
+In this assignment, a program should be created that solves the puzzle known as the Towers of Hanoi using recursion.
+
+The implementation was done in Elixir. A bash script is included in the repository that can be used to run the program: \mintinline{text}{./run-project.sh hanoi}.
+
+The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/hanoi}{GitHub}.
+
+\section*{Solving the puzzle}
+
+The Towers of Hanoi is a puzzle consisting of discs piled on three pegs.
+Every disc has a different size and only the disc on top of the stack can be moved at a time.
+A disc can only be placed on top of a larger disc or the "floor" (as the first disc on a peg).
+
+The goal of the puzzle is to move all $n$ discs from $A$ (the first disc) to $C$ (the last disc). There is an auxiliary disc, $B$, in the middle.
+There are many different ways to solve the puzzle but a recursive strategy is going to be used in this report.
+
+\subsection*{The recursive strategy}
+
+The puzzle becomes very simple to solve if we can find a way to move smaller towers, step by step, until everything has been moved from $A$ to $C$.
+After all if $n=0$ then we don't need to move anything at all and if $n=1$ we can move the disc right from $A$ to $C$.
+
+As it turns out this is possible and can be accomplished by repeatedly moving a smaller tower to $B$,
+moving the last (and largest) disc from $A$ to $C$ and then stacking our remaining discs on top of the largest disc.
+
+When moving a tower we will need to swap between the different pegs since discs will be moved in "reverse order" from what the rules allow. When moving the smaller tower to $B$ we use $C$ as auxiliary and when moving the smaller tower to $C$ we use $A$ as auxiliary.
+
+We also need to define a base case for $n=0$ since, otherwise, we would try to move $-1$ discs which makes no sense.
+The base case for $n=0$ is very simple: Since no discs need to be moved we can consider the list of moves as empty and this will also end the recursion.
+
+\subsection*{Implementation}
+
+The implementation in Elixir ends up very simple:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def hanoi(0, _, _, _) do [] end
+
+def hanoi(n, from, aux, to) do
+  hanoi(n - 1, from, to, aux) ++
+  [{:move, from, to}] ++
+  hanoi(n - 1, aux, from, to)
+end
+\end{minted}
+
+The function will generate the moves for moving tower $n-1$ to \mintinline{elixir}{aux},
+move the largest disc to \mintinline{elixir}{to} and then move tower $n-1$ on from \mintinline{elixir}{aux} to \mintinline{elixir}{to}.
+Moves are represented by a list of tuples with the format \mintinline{elixir}{{:move, from, to}} which are appended together in the function into a final result.
+The base case matches on $n=0$ and will of course return an empty list since no moves are needed.
+
+Looking at the function we can figure out how many moves will be needed to move a tower of size $n$.
+First we make $1$ move, then $2$ moves, then $2*2$ moves, then $2*2*2$ moves, then $\ldots$ until we get to $n=0$ which makes no moves.
+This gives us an infinite series $2^0 + 2^1 + \ldots + 2^{n-2} + 2^{n-1}$ where terms are successive powers of two.
+This means the number of moves needed should always be $2^n - 1$.
+
+\section*{Results}
+
+The program takes a parameter which is the upper bound of towers to consider. Running with $max=4$ gives the following result:
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{text}
+Towers of Hanoi n=0
+[]
+moves=0 (expected: 2^0 - 1 = 0)
+
+Towers of Hanoi n=1
+[{:move, :a, :c}]
+moves=1 (expected: 2^1 - 1 = 1)
+
+Towers of Hanoi n=2
+[{:move, :a, :b}, {:move, :a, :c}, {:move, :b, :c}]
+moves=3 (expected: 2^2 - 1 = 3)
+
+Towers of Hanoi n=3
+[
+  {:move, :a, :c},
+  {:move, :a, :b},
+  {:move, :c, :b},
+  {:move, :a, :c},
+  {:move, :b, :a},
+  {:move, :b, :c},
+  {:move, :a, :c}
+]
+moves=7 (expected: 2^3 - 1 = 7)
+
+Towers of Hanoi n=4
+[
+  {:move, :a, :b},
+  {:move, :a, :c},
+  {:move, :b, :c},
+  {:move, :a, :b},
+  {:move, :c, :a},
+  {:move, :c, :b},
+  {:move, :a, :b},
+  {:move, :a, :c},
+  {:move, :b, :c},
+  {:move, :b, :a},
+  {:move, :c, :a},
+  {:move, :b, :c},
+  {:move, :a, :b},
+  {:move, :a, :c},
+  {:move, :b, :c}
+]
+moves=15 (expected: 2^4 - 1 = 15)
+\end{minted}
+
+\end{document}
