@@ -27,14 +27,35 @@ defmodule Day16 do
 
   # :move => move to next valve
   # :open => open current valve
-  @type step() :: { :move, valve }, { :open, valve }
+  @type valve() :: {atom(), {integer(), list()}}
+  @type step() :: { :move, valve() }, { :open, valve() }
 
-  def total_valve_release({_, flow, _}, minute) do
+  def total_valve_release({_, {flow, _}}, minute) do
     flow * (30 - minute)
   end
 
-  @spec best_move({atom(), integer(), list()}, integer(), MapSet)
-  def best_move({valve, flow, neighbors}, minute, exclude \\ %Mapset{}) do
+  def exclude_default(valves) do
+    result = Enum.filter(valves, fn {_, {f, _}} -> f == 0 end)
+    result = Enum.map(valves, fn {a, _} -> a end)
 
+    MapSet.new(result)
+  end
+
+  @spec best_move(valve(), integer(), MapSet) :: {step(), list(atom()), integer()}
+  def best_move({valve, {flow, neighbors}}, minute, exclude) do
+    release = total_valve_release({valve, {flow, neighbors}}, minute)
+    exclude = MapSet.put(exclude, valve)
+
+    neighbors = Enum.filter(neighbors, fn {valve, _} -> !MapSet.member?(exclude, valve) end)
+    neighbors = Enum.map(neighbors, fn e -> {e, best_move(e, minute - 1, exclude)} end)
+    neighbors = Enum.sort_by(neighbors, fn {e, {move, exclude, release}} -> release end)
+
+    {best_neighbor, {_, new_exclude, neighbor_release}} = List.first(neighbors, 1)
+
+    if !best_neighbor or neighbor_release <= release do
+      {{:open, {valve, {flow, neighbors}}}, exclude, release}
+    else
+      {{:move, best_neighbor}, new_exclude, neighbor_release}
+    end
   end
 end
