@@ -30,6 +30,10 @@ root = {
 Filesystem.print(root)
 
 IO.puts("")
+IO.puts("Directories with total size <= 100000 bytes:")
 
-IO.puts("Directories with total size <= 100000:")
-Enum.map(Filesystem.dirs_less_than_100000(root), fn {name, _} -> IO.puts("'#{name}'") end)
+dirs = Filesystem.dirs_less_than_100000(root)
+Enum.map(dirs, fn {name, _} -> IO.puts("'#{name}'") end)
+
+IO.puts("")
+IO.puts("Sum of directories: #{Enum.reduce(dirs, 0, fn e, acc -> acc + Filesystem.size(e) end)} bytes")
