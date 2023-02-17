@@ -32,7 +32,9 @@ defmodule Filesystem do
   # Find by path split into list
   def find(entry, [head | tail]) do
     case entry do
+      # If we have files and subdirectories to search
       {_, entries} when is_list(entries) and length(tail) > 0 -> Enum.find_value(entries, fn e -> find(e, tail) end)
+      # If we are at the last part of the path and it matches our current "root" entry
       {root, _} when root == head and length(tail) == 0 -> entry
       _ -> nil
     end

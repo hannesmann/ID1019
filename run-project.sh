@@ -83,6 +83,12 @@ function advent07 {
   time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
 }
 
+echo "    advent16 (Advent of Code 2022 Day 16)"
+function advent16 {
+  cd src/advent16
+  time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
+}
+
 # https://unix.stackexchange.com/questions/217292/execute-only-if-it-is-a-bash-function
 if [[ $(type -t "$1") == "function" ]]; then
     echo ""
