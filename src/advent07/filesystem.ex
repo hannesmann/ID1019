@@ -52,4 +52,11 @@ defmodule Filesystem do
     end
   end
   def dirs_less_than_100000(_, acc) do acc end
+
+  # Walk tree and find all dirs
+  def dirs(entry, acc \\ [])
+  def dirs({name, entries}, acc) when is_list(entries) do
+    Enum.reduce(entries, acc ++ [{name, entries}], &dirs/2)
+  end
+  def dirs(_, acc) do acc end
 end
