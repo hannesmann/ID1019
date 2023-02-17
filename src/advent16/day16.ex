@@ -33,7 +33,8 @@ defmodule Day16 do
     flow * (30 - minute)
   end
 
-  def best_move({valve, flow, neighbors}, minute, visited \\ []) do
+  @spec best_move({atom(), integer(), list()}, integer(), MapSet)
+  def best_move({valve, flow, neighbors}, minute, exclude \\ %Mapset{}) do
 
   end
 end

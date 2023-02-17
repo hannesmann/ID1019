@@ -7,7 +7,3 @@ current = :AA
 steps = []
 
 # Repeat steps
-for i in 0..30 do
-  visited = [current]
-
-end

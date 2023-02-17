@@ -1,7 +1,7 @@
 Code.require_file("filesystem.ex")
 Code.require_file("parser.ex")
 
-test = {
+_test = {
   "", [
     {
       "a", [
@@ -30,24 +30,13 @@ test = {
 
 #Filesystem.print(test)
 
-#IO.puts("")
-#IO.puts("Test - Directories with total size <= 100000 bytes:")
-
-#dirs = Filesystem.dirs_less_than_100000(test)
-#Enum.map(dirs, fn {name, _} -> IO.puts("'#{name}'") end)
-
-#IO.puts("")
-#IO.puts("Test - Sum of directories: #{Enum.reduce(dirs, 0, fn e, acc -> acc + Filesystem.size(e) end)} bytes")
-
 root = FilesystemParser.parse(File.stream!("day07.txt"))
-Filesystem.print(root)
-
-IO.puts("")
-IO.puts("Directories with total size <= 100000:")
+# Filesystem.print(root)
 
 dirs = Filesystem.dirs_less_than_100000(root)
-Enum.map(dirs, fn {name, _} -> IO.puts("'#{name}'") end)
+sum = Enum.reduce(dirs, 0, fn e, acc -> acc + Filesystem.size(e) end)
 
+IO.puts("Sum of directories with total size <= 100000: #{sum}")
 IO.puts("")
 
 dirs = Filesystem.dirs(root)
