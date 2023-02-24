@@ -35,7 +35,7 @@ defmodule FilesystemParser do
 
         case Enum.at(cmd, 1) do
           "cd" ->
-            [_, cmd, extra] = String.split(String.trim(row), " ")
+            [_, _, extra] = String.split(String.trim(row), " ")
 
             case extra do
               "/" -> {root, []}

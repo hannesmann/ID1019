@@ -20,12 +20,152 @@
 \section*{Introduction}
 
 This is a report for the fifth assignment in the course ID1019 Programming II.
-In this assignment, one of the puzzles from Advent of Code should be solved. In this report the puzzle that was chosen is Day 7: No Space Left On Device.
+In this assignment, one of the exercises from Advent of Code should be solved. In this report the puzzle that was chosen is \href{https://adventofcode.com/2022/day/7}{Day 7: No Space Left On Device}.
 
 The implementation was done in Elixir. A bash script is included in the repository that can be used to run the program: \mintinline{text}{./run-project.sh advent07}.
 
 The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/advent07}{GitHub}.
 
-\section*{The problem}
+\section*{Determining the size of directories}
+
+The first part of the exercise is to parse a list of commands (simulating a person typing in a Unix terminal) and create a filesystem structure.
+The filesystem should then be used to determine the size of all directories which contain less than 10000 bytes.
+
+\subsection*{The parser}
+
+The list of commands will look something like this:
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{sh}
+$ ls
+dir a
+593243 b
+$ cd a
+$ ls
+dir c
+dir d
+100 e
+$ cd ..
+\end{minted}
+
+The $\$$ symbol looks like a shell prompt (from bash, zsh, etc...) but it can actually be used to distinguish between commands and directory listings.
+A command will always be \mintinline{text}{cd} or \mintinline{text}{ls} and a directory listing will contain commands \mintinline{text}{dir} and \mintinline{text}{[size]}
+where \mintinline{text}{[size]} says that the entry is a file with the specified size.
+
+Handling \mintinline{text}{cd} is done by keeping a stack that we can push (if we move into a directory) and pop (if we move back to the parent).
+We use \mintinline{text}{reduce} in Elixir to keep track of state.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+case Enum.at(cmd, 1) do
+  "cd" ->
+    [_, cmd, extra] = String.split(String.trim(row), " ")
+
+    case extra do
+      "/" -> {root, []}
+      ".." -> {root, Enum.drop(stack, -1)}
+      _ -> {root, stack ++ [extra]}
+    end
+  _ -> {root, stack}
+end
+\end{minted}
+
+Filesystem entires are added to \mintinline{text}{root} with recursion.
+The function walks down the stack until it reaches the current directory and adds either a directory or file entry.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# adddir works the same way
+def addfile({name, entries}, [], file, size) do
+  {name, entries ++ [{file, size}]}
+end
+def addfile({name, entries}, [head | tail], file, size) do
+  {name, Enum.map(entries, fn {n, l} ->
+    if head == n do
+      addfile({n, l}, tail, file, size)
+    else
+      {n, l}
+    end
+  end)}
+end
+\end{minted}
+
+\subsection*{The filesystem}
+
+The finished filesystem structure will contain entries which are either files \mintinline{text}{{name, size}} or directories \mintinline{text}{{name, entries}}.
+Starting at the root we can walk down the filesystem and find all directories that are big enough to qualify:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def dirs_less_than_100000(entry, acc \\ [])
+def dirs_less_than_100000({name, entries}, acc) when is_list(entries) do
+  this_size = size({name, entries})
+
+  if this_size <= 100000 do
+    Enum.reduce(entries, acc ++ [{name, entries}], &dirs_less_than_100000/2)
+  else
+    Enum.reduce(entries, acc, &dirs_less_than_100000/2)
+  end
+end
+def dirs_less_than_100000(_, acc) do acc end
+\end{minted}
+
+Once we have a list of all directories we can sum them together with \mintinline{text}{reduce}:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+Enum.reduce(dirs, 0, fn e, acc -> acc + Filesystem.size(e) end)
+\end{minted}
+
+\section*{Determining what directory to delete}
+
+The second part of the exercise is determining what directory we should delete to free up enough space for the system update to go through.
+The total disk space is 70000000 bytes and we need at least 30000000 bytes to perform the update.
+
+\subsection*{Determining the amount of free space on the disk}
+
+To determine the amount of free space on the disk we need to know two things: How big the disk is and how much space all the files take up.
+We already know how big the disk is and we can measure the size of the root directory to find out how much space all the files take up together.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+root_size = Filesystem.size(root)
+free_space = 70000000 - root_size
+required_to_delete = 30000000 - free_space
+\end{minted}
+
+\subsection*{Determining the smallest viable directory}
+
+Now that we know how many bytes we need to delete we should find the smallest directory that is still big enough to free up enough space.
+
+To find all the directory in the filesystem we only need to start at the root directory and walk down the tree, ignoring any files.
+The condition to determine if something is a file or directory is checking if \mintinline{text}{entries} is a list.
+In hindsight, giving every entry a unique atom would have made pattern matching much easier.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# Walk tree and find all dirs
+def dirs(entry, acc \\ [])
+def dirs({name, entries}, acc) when is_list(entries) do
+  Enum.reduce(entries, acc ++ [{name, entries}], &dirs/2)
+end
+def dirs(_, acc) do acc end
+\end{minted}
+
+Now that we can obtain a list of all directories we only need to sort it by size and filter out any directories that are too small:
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+sorted_by_size = Enum.filter(dirs,
+  fn e -> Filesystem.size(e) >= required_to_delete end
+)
+sorted_by_size = Enum.sort_by(sorted_by_size, &Filesystem.size/1)
+{to_delete, _} = List.first(sorted_by_size)
+\end{minted}
+
+\section*{Result}
+
+Running the program on the puzzle input (included in src/advent07/day07.txt) gives the following results:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{text}
+Sum of directories with total size <= 100000: 1444896
+
+root_size: 40389918
+free_space: 29610082
+required_to_delete: 389918
+
+Directory to be deleted: mdclfbs
+Size: 404395
+\end{minted}
 
 \end{document}
