@@ -1,0 +1,125 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{minted}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{
+    \textbf{Monte Carlo and $\pi$}
+}
+\author{Hannes Mann}
+\date{2023-02-24}
+
+\maketitle
+
+\section*{Introduction}
+
+This is a report for the sixth assignment in the course ID1019 Programming II.
+In this assignment, the Monte Carlo method should be used to approximate the value of $\pi$.
+
+The implementation was done in Elixir. A bash script is included in the repository that can be used to run the program: \mintinline{text}{./run-project.sh montecarlo}.
+
+The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/montecarlo}{GitHub}.
+
+\section*{The Monte Carlo method}
+
+A Monte Carlo method is a type of algorithm that works by repeatedly sampling random points as a way to approximate mathematical problems that would be difficult to solve by hand.
+For example, we can approximate $\pi$ by thinking of the problem as throwing random darts at a circle of radius $r$ and seeing if the dart lands inside one of the quadrants of a circle, $r^2$ (that is, $r^2 > x^2 + y^2$).
+
+In Elixir this would be expressed as a function that throws a dart at a random $(x, y)$ pair and returns if the dart landed inside or not:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def dart(r) do
+  # Much faster than Enum.random
+  x = :rand.uniform(r)
+  y = :rand.uniform(r)
+
+  r ** 2 > x ** 2 + y ** 2
+end
+\end{minted}
+
+\subsection*{Simulating multiple rounds}
+
+We define a round as throwing $k$ darts on a target and returning how many hit the target. This can be implemented recursively in Elixir like this:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def round(0, _, a) do a end
+def round(k, r, a) do
+  # If we hit the target
+  case dart(r) do
+    true -> round(k - 1, r, a + 1)
+    false -> round(k - 1, r, a)
+  end
+end
+\end{minted}
+
+$r$ is the radius of the circle and $a$ is the number of darts that have hit so far.
+The radius is important because we are not using floating-point math, so the range of random numbers needs to be large enough to be able to sample the circle accurately.
+
+We can run the round function several times to determine $\pi$ with greater and greater accuracy.
+The ratio of the number of darts hit to the number of darts thrown will start to approximate $\frac{\pi}{4}$
+(since we're only checking one arch). Multiplying by $4$ will give us an approximation of $\pi$.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def rounds(0, _, t, _, a) do 4 * a/t end
+
+# k = rounds left
+# j = darts each round
+# t = total thrown darts
+# r = radius of circle
+# a = total hit darts
+def rounds(k, j, t, r, a) do
+  a = round(j, r, a)
+  t = t + j
+  pi = 4 * a/t
+  # print here
+  rounds(k - 1, j, t, r, a)
+end
+\end{minted}
+
+\subsection*{Testing the accuracy of our method}
+
+To get an accurate result, the first thing we need to do is determine how large our radius should be.
+I defined this as \mintinline{text}{trunc(:math.sqrt(134217728))} which is the largest integer that Elixir can efficiently represent on 32-bit machines and gives us a lot of range to perform the calculations accurately.
+
+Running a thousand rounds with ten thousand darts for every round gives the following result:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+round 100 - pi: 3.142520000000 abs error: 0.000927346410
+round 200 - pi: 3.141410000000 abs error: 0.000182653590
+round 300 - pi: 3.141084000000 abs error: 0.000508653590
+round 400 - pi: 3.140919000000 abs error: 0.000673653590
+round 500 - pi: 3.141127200000 abs error: 0.000465453590
+round 600 - pi: 3.141130666667 abs error: 0.000461986923
+round 700 - pi: 3.141254857143 abs error: 0.000337796447
+round 800 - pi: 3.141349000000 abs error: 0.000243653590
+round 900 - pi: 3.141942222222 abs error: 0.000349568632
+round 1000 - pi: 3.141964000000 abs error: 0.000371346410
+\end{minted}
+
+Even after throwing $10000000$ darts we are still only accurate to the third decimal. This is enough to beat Archimedes but clearly this method needs a lot of samples to find accurate results.
+
+We can try doubling the number of darts every round (so $2^1, 2^2, 2^3, $ etc...):
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+round (doubling) 1 - pi: 2.000000000000 abs error: 1.141592653590
+round (doubling) 2 - pi: 2.000000000000 abs error: 1.141592653590
+round (doubling) 3 - pi: 1.500000000000 abs error: 1.641592653590
+round (doubling) 4 - pi: 2.250000000000 abs error: 0.891592653590
+round (doubling) 5 - pi: 2.625000000000 abs error: 0.516592653590
+...
+round (doubling) 23 - pi: 3.141885280609 abs error: 0.000292627019
+round (doubling) 24 - pi: 3.141875982285 abs error: 0.000283328695
+round (doubling) 25 - pi: 3.141757369041 abs error: 0.000164715452
+round (doubling) 26 - pi: 3.141656696796 abs error: 0.000064043207
+\end{minted}
+
+Even after throwing $2^{26} = 67108864$ darts we are still only accurate to the fourth decimal.
+The method proposed in the course material (Leibniz formula) is accurate to the fourth decimal after only 1000 rounds.
+
+\end{document}
