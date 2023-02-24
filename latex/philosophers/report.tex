@@ -1,0 +1,142 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{minted}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{
+    \textbf{Philosophers and Concurrency}
+}
+\author{Hannes Mann}
+\date{2023-02-24}
+
+\maketitle
+
+\section*{Introduction}
+
+This is a report for the last higher-grade assignment in the course ID1019 Programming II.
+In this assignment, a system should be implemented with concurrency that simulates philosophers sitting around at a table sharing a limited number of chopsticks.
+
+The implementation was done in Elixir. A bash script is included in the repository that can be used to run the program: \mintinline{text}{./run-project.sh philosophers}.
+
+The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/philosophers}{GitHub}.
+
+\section*{Actors in the program}
+
+The program is written with concurrency in Elixir, which means it uses lightweight processes to represent different actors. The program has two main "actors":
+
+\begin{itemize}
+	\item \textbf{Philosopher}: A philosopher will either be dreaming (sleeping), waiting for two chopsticks or eating. Once the philosopher has eaten it will not request the chopsticks again.
+	\item \textbf{Chopsticks}: A chopstick can either be available or gone. This acts like a lock, in that one philosopher can only hold a chopstick at any one time. It can only be released by the philosopher that borrowed it.
+\end{itemize}
+
+As the program starts it will spawn $n$ chopsticks and $m$ philosophers. Since every philosopher needs two chopsticks to eat, if $n \leq m$ every philosopher except one will be required to wait at some point.
+
+Just from reading the description it's obvious that a deadlock can occur. Since the philosophers will wait for a chopstick forever, two philosophers can get stuck waiting on the same chopstick forever.
+The first version of the philosopher looked like this:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def rand_sleep(0) do :ok end
+def rand_sleep(t) do
+  # Average: :rand.uniform(t)
+  :timer.sleep(:rand.uniform(t) * 2)
+end
+
+def start(hunger, left, right, name, ctrl) do
+  spawn_link(fn -> dreaming({hunger, left, right, name, ctrl}) end)
+end
+
+def dreaming({hunger, left, right, name, ctrl}) do
+  # Sleep for a while...
+  rand_sleep(200)
+  # Wake up!
+  waiting({hunger, left, right, name, ctrl})
+end
+
+def waiting({hunger, left, right, name, ctrl}) do
+  Chopstick.request(left)
+  IO.puts("[#{name}] received left chopstick")
+  Chopstick.request(right)
+  IO.puts("[#{name}] received right chopstick")
+
+  eating({hunger, left, right, name, ctrl})
+end
+
+def eating({hunger, left, right, name, ctrl}) do
+  Enum.each(0..hunger, fn _ ->
+    # Eating...
+    rand_sleep(100)
+  end)
+
+  Chopstick.return(left)
+  Chopstick.return(right)
+
+  IO.puts("[#{name}] finished eating")
+  send(ctrl, :done)
+
+  dreaming({hunger, left, right, name, ctrl})
+end
+\end{minted}
+
+If we wait between requesting the left and right chopstick, a deadlock will occur every time.
+To resolve this we will request the chopsticks at the same time and we will add a timeout to the philosopher. If the philosoper has waited too many times for a chopstick it dies:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# Returns immediately
+def send_request(stick) do
+  send(stick, {:request, self()})
+end
+
+# This gives the philosoper a function it can choose to call
+def get_wait_function(stick, timeout) do
+  fn ->
+    receive do
+      {:received, stick} -> :ok
+    after timeout ->
+      :no
+    end
+  end
+end
+
+# Strength reaches 0
+def waiting({_, _, _, name, ctrl, 0, _}) do
+  IO.puts("[#{name}] died waiting for chopstick")
+  send(ctrl, :done)
+end
+
+def waiting({hunger, left, right, name, ctrl, strength, {left_waiter, right_waiter}}) do
+  case {left_waiter.(), right_waiter.()} do
+    {:ok, :ok} -> eating({hunger, left, right, name, ctrl, strength})
+    {_, :ok} -> waiting({hunger, left, right, name, ctrl, strength - 1, {left_waiter, fn -> :ok end}})
+    {:ok, _} -> waiting({hunger, left, right, name, ctrl, strength - 1, {fn -> :ok end, right_waiter}})
+    _ -> waiting({hunger, left, right, name, ctrl, strength - 2, {left_waiter, right_waiter}})
+  end
+end
+\end{minted}
+
+\section*{Benchmarks}
+
+We can first try to spawn $n$ philosophers and $n$ chopsticks:
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+n=10 - 1877 ms
+n=20 - 2062 ms
+n=30 - 2341 ms
+n=40 - 2307 ms
+\end{minted}
+
+As we can see the time does not increase as we spawn more philosophers. It's only when we limit the number of chopsticks to five that the program takes longer:
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+n=10 - 2110 ms
+n=20 - 4474 ms
+n=30 - 6959 ms
+n=40 - 9579 ms
+\end{minted}
+
+The time starts growing exponentially, as the number of philosophers stuck in timeout that eventually die increase.
+
+\end{document}

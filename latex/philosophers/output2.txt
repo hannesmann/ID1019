@@ -1,0 +1,722 @@
+Spawning 10 philosophers
+[done] 7 finished eating
+[done] 9 finished eating
+[done] 4 finished eating
+[done] 2 finished eating
+[done] 10 finished eating
+[done] 8 finished eating
+[done] 6 finished eating
+[done] 1 finished eating
+[done] 3 finished eating
+[done] 5 finished eating
+Exited - Reason: normal, lasted for: 2110 ms
+Spawning 20 philosophers
+[done] 7 finished eating
+[done] 0 finished eating
+[done] 13 finished eating
+[done] 2 finished eating
+[done] 0 finished eating
+[done] 16 finished eating
+[done] 4 finished eating
+[done] 20 finished eating
+[done] 12 finished eating
+[done] 14 finished eating
+[done] 7 finished eating
+[done] 4 finished eating
+[done] 1 finished eating
+[done] 17 finished eating
+[done] 13 finished eating
+[done] 8 finished eating
+[done] 2 finished eating
+[done] 6 finished eating
+[done] 15 finished eating
+[done] 9 finished eating
+[done] 3 finished eating
+[done] 5 finished eating
+[done] 18 finished eating
+[done] 19 finished eating
+Exited - Reason: normal, lasted for: 4474 ms
+Spawning 30 philosophers
+[done] 14 finished eating
+[done] 16 finished eating
+[done] 5 finished eating
+[done] 27 finished eating
+[done] 9 finished eating
+[done] 3 finished eating
+[done] 10 finished eating
+[done] 8 finished eating
+[done] 12 finished eating
+[done] 24 finished eating
+[done] 30 finished eating
+[done] 13 finished eating
+[done] 5 finished eating
+[done] 10 finished eating
+[done] 15 finished eating
+[done] 0 finished eating
+[done] 1 finished eating
+[done] 4 finished eating
+[done] 11 finished eating
+[done] 2 finished eating
+[done] 20 finished eating
+[done] 22 finished eating
+[done] 19 finished eating
+[done] 21 finished eating
+[done] 18 finished eating
+[done] 23 finished eating
+[done] 29 finished eating
+[done] 17 finished eating
+[done] 14 finished eating
+[done] 9 finished eating
+[done] 27 finished eating
+[done] 3 finished eating
+[done] 30 finished eating
+Exited - Reason: normal, lasted for: 6959 ms
+Spawning 40 philosophers
+[done] 6 finished eating
+[9] died waiting for chopstick
+[done] 12 finished eating
+[done] 10 finished eating
+[done] 18 finished eating
+[done] 36 finished eating
+[done] 24 finished eating
+[done] 28 finished eating
+[done] 12 finished eating
+[6] died waiting for chopstick
+[done] 27 finished eating
+[done] 19 finished eating
+[done] 35 finished eating
+[done] 32 finished eating
+[done] 9 finished eating
+[done] 4 finished eating
+[done] 1 finished eating
+[done] 23 finished eating
+[5] died waiting for chopstick
+[done] 15 finished eating
+[done] 30 finished eating
+[done] 6 finished eating
+[done] 2 finished eating
+[19] died waiting for chopstick
+[done] 29 finished eating
+[done] 25 finished eating
+[11] died waiting for chopstick
+[done] 33 finished eating
+[done] 8 finished eating
+[done] 26 finished eating
+[done] 10 finished eating
+[10] died waiting for chopstick
+[12] died waiting for chopstick
+[done] 34 finished eating
+[7] died waiting for chopstick
+[done] 7 finished eating
+[done] 31 finished eating
+[8] died waiting for chopstick
+[done] 21 finished eating
+[done] 37 finished eating
+[done] 17 finished eating
+[25] died waiting for chopstick
+[done] 20 finished eating
+[28] died waiting for chopstick
+[7] died waiting for chopstick
+[24] died waiting for chopstick
+[11] died waiting for chopstick
+[done] 40 finished eating
+[done] 16 finished eating
+[done] 5 finished eating
+[done] 39 finished eating
+[19] died waiting for chopstick
+[done] 0 finished eating
+[done] 38 finished eating
+[22] died waiting for chopstick
+[18] died waiting for chopstick
+[done] 11 finished eating
+[21] died waiting for chopstick
+[done] 27 finished eating
+[23] died waiting for chopstick
+[done] 22 finished eating
+[17] died waiting for chopstick
+[29] died waiting for chopstick
+[done] 18 finished eating
+Exited - Reason: normal, lasted for: 9579 ms
+Spawning 50 philosophers
+[14] died waiting for chopstick
+[done] 36 finished eating
+[3] died waiting for chopstick
+[done] 13 finished eating
+[done] 45 finished eating
+[9] died waiting for chopstick
+[30] died waiting for chopstick
+[done] 19 finished eating
+[done] 13 finished eating
+[done] 29 finished eating
+[6] died waiting for chopstick
+[10] died waiting for chopstick
+[done] 46 finished eating
+[done] 50 finished eating
+[done] 44 finished eating
+[12] died waiting for chopstick
+[done] 49 finished eating
+[done] 1 finished eating
+[done] 5 finished eating
+[done] 40 finished eating
+[done] 15 finished eating
+[done] 39 finished eating
+[done] 26 finished eating
+[done] 38 finished eating
+[done] 30 finished eating
+[done] 48 finished eating
+[done] 41 finished eating
+[28] died waiting for chopstick
+[34] died waiting for chopstick
+[done] 47 finished eating
+[26] died waiting for chopstick
+[14] died waiting for chopstick
+[done] 21 finished eating
+[done] 7 finished eating
+[done] 0 finished eating
+[7] died waiting for chopstick
+[done] 22 finished eating
+[31] died waiting for chopstick
+[1] died waiting for chopstick
+[done] 27 finished eating
+[21] died waiting for chopstick
+[37] died waiting for chopstick
+[done] 11 finished eating
+[done] 8 finished eating
+[12] died waiting for chopstick
+[done] 33 finished eating
+[20] died waiting for chopstick
+[done] 20 finished eating
+[done] 4 finished eating
+[16] died waiting for chopstick
+[done] 43 finished eating
+[done] 25 finished eating
+[done] 9 finished eating
+[5] died waiting for chopstick
+[done] 2 finished eating
+[done] 36 finished eating
+[done] 32 finished eating
+[done] 28 finished eating
+[done] 14 finished eating
+[11] died waiting for chopstick
+[done] 35 finished eating
+[done] 31 finished eating
+[done] 18 finished eating
+[done] 45 finished eating
+[done] 17 finished eating
+[done] 19 finished eating
+[done] 34 finished eating
+[done] 16 finished eating
+[done] 10 finished eating
+[done] 3 finished eating
+[done] 37 finished eating
+[done] 24 finished eating
+[done] 12 finished eating
+[done] 50 finished eating
+Exited - Reason: normal, lasted for: 12211 ms
+Spawning 60 philosophers
+[done] 6 finished eating
+[done] 23 finished eating
+[done] 0 finished eating
+[done] 29 finished eating
+[done] 38 finished eating
+[done] 35 finished eating
+[done] 13 finished eating
+[done] 39 finished eating
+[done] 56 finished eating
+[done] 23 finished eating
+[done] 28 finished eating
+[done] 30 finished eating
+[done] 54 finished eating
+[done] 46 finished eating
+[42] died waiting for chopstick
+[done] 58 finished eating
+[done] 14 finished eating
+[done] 21 finished eating
+[done] 29 finished eating
+[done] 36 finished eating
+[32] died waiting for chopstick
+[14] died waiting for chopstick
+[35] died waiting for chopstick
+[18] died waiting for chopstick
+[done] 33 finished eating
+[47] died waiting for chopstick
+[48] died waiting for chopstick
+[done] 59 finished eating
+[done] 26 finished eating
+[45] died waiting for chopstick
+[21] died waiting for chopstick
+[done] 43 finished eating
+[17] died waiting for chopstick
+[done] 10 finished eating
+[done] 17 finished eating
+[34] died waiting for chopstick
+[7] died waiting for chopstick
+[done] 3 finished eating
+[19] died waiting for chopstick
+[0] died waiting for chopstick
+[38] died waiting for chopstick
+[16] died waiting for chopstick
+[44] died waiting for chopstick
+[done] 16 finished eating
+[done] 4 finished eating
+[done] 32 finished eating
+[22] died waiting for chopstick
+[1] died waiting for chopstick
+[10] died waiting for chopstick
+[3] died waiting for chopstick
+[50] died waiting for chopstick
+[37] died waiting for chopstick
+[done] 44 finished eating
+[done] 12 finished eating
+[done] 6 finished eating
+[12] died waiting for chopstick
+[33] died waiting for chopstick
+[8] died waiting for chopstick
+[4] died waiting for chopstick
+[done] 27 finished eating
+[done] 5 finished eating
+[done] 48 finished eating
+[done] 51 finished eating
+[29] died waiting for chopstick
+[done] 34 finished eating
+[done] 22 finished eating
+[done] 8 finished eating
+[done] 55 finished eating
+[done] 42 finished eating
+[done] 18 finished eating
+[done] 45 finished eating
+[done] 2 finished eating
+[done] 7 finished eating
+[done] 24 finished eating
+[done] 9 finished eating
+[done] 57 finished eating
+[done] 40 finished eating
+[done] 15 finished eating
+[done] 47 finished eating
+[done] 19 finished eating
+[done] 25 finished eating
+[done] 31 finished eating
+[done] 38 finished eating
+[done] 41 finished eating
+[done] 37 finished eating
+[done] 50 finished eating
+[done] 56 finished eating
+[done] 11 finished eating
+[done] 35 finished eating
+[done] 52 finished eating
+[done] 46 finished eating
+Exited - Reason: normal, lasted for: 12312 ms
+Spawning 70 philosophers
+[done] 1 finished eating
+[done] 53 finished eating
+[done] 47 finished eating
+[done] 70 finished eating
+[done] 36 finished eating
+[done] 12 finished eating
+[done] 4 finished eating
+[done] 39 finished eating
+[60] died waiting for chopstick
+[done] 51 finished eating
+[done] 14 finished eating
+[done] 49 finished eating
+[43] died waiting for chopstick
+[done] 69 finished eating
+[3] died waiting for chopstick
+[done] 64 finished eating
+[47] died waiting for chopstick
+[25] died waiting for chopstick
+[19] died waiting for chopstick
+[done] 48 finished eating
+[done] 60 finished eating
+[done] 43 finished eating
+[16] died waiting for chopstick
+[49] died waiting for chopstick
+[38] died waiting for chopstick
+[done] 34 finished eating
+[41] died waiting for chopstick
+[44] died waiting for chopstick
+[done] 57 finished eating
+[28] died waiting for chopstick
+[done] 31 finished eating
+[5] died waiting for chopstick
+[50] died waiting for chopstick
+[27] died waiting for chopstick
+[12] died waiting for chopstick
+[done] 7 finished eating
+[37] died waiting for chopstick
+[6] died waiting for chopstick
+[51] died waiting for chopstick
+[done] 1 finished eating
+[54] died waiting for chopstick
+[done] 56 finished eating
+[35] died waiting for chopstick
+[56] died waiting for chopstick
+[34] died waiting for chopstick
+[11] died waiting for chopstick
+[done] 21 finished eating
+[22] died waiting for chopstick
+[done] 27 finished eating
+[53] died waiting for chopstick
+[done] 40 finished eating
+[46] died waiting for chopstick
+[52] died waiting for chopstick
+[done] 2 finished eating
+[done] 17 finished eating
+[36] died waiting for chopstick
+[done] 20 finished eating
+[done] 28 finished eating
+[done] 52 finished eating
+[done] 26 finished eating
+[done] 41 finished eating
+[done] 37 finished eating
+[done] 11 finished eating
+[done] 46 finished eating
+[done] 8 finished eating
+[done] 25 finished eating
+[done] 68 finished eating
+[done] 54 finished eating
+[done] 9 finished eating
+[done] 67 finished eating
+[done] 3 finished eating
+[done] 5 finished eating
+[done] 18 finished eating
+[done] 23 finished eating
+[done] 15 finished eating
+[done] 47 finished eating
+[done] 29 finished eating
+[done] 32 finished eating
+[done] 55 finished eating
+[done] 65 finished eating
+[done] 19 finished eating
+[done] 22 finished eating
+[done] 24 finished eating
+[done] 70 finished eating
+[done] 58 finished eating
+[done] 13 finished eating
+[done] 35 finished eating
+[done] 30 finished eating
+[done] 38 finished eating
+[done] 45 finished eating
+[done] 42 finished eating
+[done] 33 finished eating
+[done] 50 finished eating
+[done] 6 finished eating
+[done] 10 finished eating
+[done] 66 finished eating
+[done] 63 finished eating
+[done] 0 finished eating
+[61] died waiting for chopstick
+[done] 36 finished eating
+[16] died waiting for chopstick
+[done] 59 finished eating
+Exited - Reason: normal, lasted for: 14072 ms
+Spawning 80 philosophers
+[done] 44 finished eating
+[done] 62 finished eating
+[5] died waiting for chopstick
+[done] 39 finished eating
+[done] 3 finished eating
+[54] died waiting for chopstick
+[done] 71 finished eating
+[done] 79 finished eating
+[7] died waiting for chopstick
+[18] died waiting for chopstick
+[done] 26 finished eating
+[1] died waiting for chopstick
+[done] 12 finished eating
+[56] died waiting for chopstick
+[done] 58 finished eating
+[21] died waiting for chopstick
+[23] died waiting for chopstick
+[47] died waiting for chopstick
+[done] 6 finished eating
+[done] 53 finished eating
+[15] died waiting for chopstick
+[27] died waiting for chopstick
+[done] 78 finished eating
+[done] 43 finished eating
+[24] died waiting for chopstick
+[29] died waiting for chopstick
+[done] 75 finished eating
+[22] died waiting for chopstick
+[55] died waiting for chopstick
+[done] 49 finished eating
+[28] died waiting for chopstick
+[19] died waiting for chopstick
+[done] 72 finished eating
+[done] 55 finished eating
+[70] died waiting for chopstick
+[48] died waiting for chopstick
+[done] 63 finished eating
+[26] died waiting for chopstick
+[58] died waiting for chopstick
+[done] 5 finished eating
+[done] 2 finished eating
+[done] 76 finished eating
+[6] died waiting for chopstick
+[done] 62 finished eating
+[done] 46 finished eating
+[done] 61 finished eating
+[done] 32 finished eating
+[done] 67 finished eating
+[done] 35 finished eating
+[done] 10 finished eating
+[done] 22 finished eating
+[done] 37 finished eating
+[done] 15 finished eating
+[done] 17 finished eating
+[done] 39 finished eating
+[done] 4 finished eating
+[done] 30 finished eating
+[done] 7 finished eating
+[done] 45 finished eating
+[done] 11 finished eating
+[done] 59 finished eating
+[done] 14 finished eating
+[done] 68 finished eating
+[done] 73 finished eating
+[done] 31 finished eating
+[done] 69 finished eating
+[done] 25 finished eating
+[done] 33 finished eating
+[done] 20 finished eating
+[done] 56 finished eating
+[done] 60 finished eating
+[done] 41 finished eating
+[done] 57 finished eating
+[done] 65 finished eating
+[done] 16 finished eating
+[done] 28 finished eating
+[done] 74 finished eating
+[done] 36 finished eating
+[done] 8 finished eating
+[done] 23 finished eating
+[done] 77 finished eating
+[done] 44 finished eating
+[done] 48 finished eating
+[done] 34 finished eating
+[done] 29 finished eating
+[9] died waiting for chopstick
+[done] 24 finished eating
+[54] died waiting for chopstick
+[5] died waiting for chopstick
+[66] died waiting for chopstick
+[38] died waiting for chopstick
+[done] 18 finished eating
+[done] 13 finished eating
+[52] died waiting for chopstick
+[33] died waiting for chopstick
+[47] died waiting for chopstick
+[2] died waiting for chopstick
+[60] died waiting for chopstick
+[51] died waiting for chopstick
+[40] died waiting for chopstick
+[20] died waiting for chopstick
+[62] died waiting for chopstick
+[41] died waiting for chopstick
+[32] died waiting for chopstick
+[46] died waiting for chopstick
+Exited - Reason: normal, lasted for: 15486 ms
+Spawning 90 philosophers
+[35] died waiting for chopstick
+[61] died waiting for chopstick
+[done] 76 finished eating
+[65] died waiting for chopstick
+[done] 73 finished eating
+[done] 29 finished eating
+[done] 41 finished eating
+[67] died waiting for chopstick
+[74] died waiting for chopstick
+[22] died waiting for chopstick
+[28] died waiting for chopstick
+[10] died waiting for chopstick
+[done] 74 finished eating
+[done] 27 finished eating
+[16] died waiting for chopstick
+[done] 62 finished eating
+[done] 70 finished eating
+[done] 4 finished eating
+[39] died waiting for chopstick
+[done] 36 finished eating
+[23] died waiting for chopstick
+[done] 19 finished eating
+[done] 1 finished eating
+[done] 64 finished eating
+[done] 58 finished eating
+[done] 84 finished eating
+[done] 48 finished eating
+[done] 55 finished eating
+[done] 53 finished eating
+[done] 49 finished eating
+[done] 86 finished eating
+[done] 63 finished eating
+[done] 26 finished eating
+[done] 8 finished eating
+[done] 2 finished eating
+[done] 39 finished eating
+[done] 77 finished eating
+[done] 75 finished eating
+[done] 13 finished eating
+[done] 90 finished eating
+[done] 83 finished eating
+[done] 7 finished eating
+[done] 89 finished eating
+[done] 14 finished eating
+[done] 59 finished eating
+[done] 35 finished eating
+[done] 0 finished eating
+[done] 38 finished eating
+[done] 61 finished eating
+[done] 54 finished eating
+[done] 22 finished eating
+[done] 5 finished eating
+[done] 17 finished eating
+[done] 81 finished eating
+[done] 47 finished eating
+[done] 37 finished eating
+[done] 71 finished eating
+[done] 78 finished eating
+[done] 46 finished eating
+[done] 82 finished eating
+[done] 30 finished eating
+[done] 18 finished eating
+[done] 15 finished eating
+[done] 31 finished eating
+[done] 23 finished eating
+[done] 66 finished eating
+[done] 28 finished eating
+[done] 60 finished eating
+[done] 43 finished eating
+[done] 87 finished eating
+[done] 42 finished eating
+[done] 44 finished eating
+[done] 68 finished eating
+[done] 45 finished eating
+[done] 51 finished eating
+[85] died waiting for chopstick
+[done] 25 finished eating
+[done] 12 finished eating
+[32] died waiting for chopstick
+[done] 20 finished eating
+[80] died waiting for chopstick
+[done] 56 finished eating
+[73] died waiting for chopstick
+[done] 33 finished eating
+[47] died waiting for chopstick
+[48] died waiting for chopstick
+[done] 67 finished eating
+[57] died waiting for chopstick
+[26] died waiting for chopstick
+[37] died waiting for chopstick
+[9] died waiting for chopstick
+[71] died waiting for chopstick
+[8] died waiting for chopstick
+[63] died waiting for chopstick
+[46] died waiting for chopstick
+[18] died waiting for chopstick
+[90] died waiting for chopstick
+[82] died waiting for chopstick
+[13] died waiting for chopstick
+[39] died waiting for chopstick
+[77] died waiting for chopstick
+Exited - Reason: normal, lasted for: 16546 ms
+Spawning 100 philosophers
+[75] died waiting for chopstick
+[15] died waiting for chopstick
+[60] died waiting for chopstick
+[66] died waiting for chopstick
+[done] 69 finished eating
+[23] died waiting for chopstick
+[done] 77 finished eating
+[done] 80 finished eating
+[done] 17 finished eating
+[done] 100 finished eating
+[done] 26 finished eating
+[61] died waiting for chopstick
+[done] 71 finished eating
+[done] 46 finished eating
+[done] 9 finished eating
+[done] 51 finished eating
+[done] 15 finished eating
+[done] 91 finished eating
+[done] 25 finished eating
+[done] 52 finished eating
+[done] 30 finished eating
+[done] 85 finished eating
+[done] 23 finished eating
+[done] 61 finished eating
+[done] 16 finished eating
+[done] 20 finished eating
+[done] 22 finished eating
+[done] 75 finished eating
+[done] 7 finished eating
+[done] 13 finished eating
+[done] 98 finished eating
+[done] 89 finished eating
+[done] 37 finished eating
+[done] 2 finished eating
+[done] 70 finished eating
+[done] 56 finished eating
+[done] 43 finished eating
+[done] 79 finished eating
+[done] 97 finished eating
+[done] 94 finished eating
+[done] 82 finished eating
+[done] 47 finished eating
+[done] 44 finished eating
+[done] 1 finished eating
+[done] 11 finished eating
+[done] 5 finished eating
+[done] 41 finished eating
+[done] 35 finished eating
+[done] 42 finished eating
+[done] 55 finished eating
+[done] 0 finished eating
+[done] 92 finished eating
+[done] 19 finished eating
+[done] 6 finished eating
+[done] 88 finished eating
+[done] 10 finished eating
+[done] 45 finished eating
+[done] 59 finished eating
+[done] 31 finished eating
+[done] 96 finished eating
+[done] 14 finished eating
+[done] 21 finished eating
+[done] 49 finished eating
+[done] 66 finished eating
+[27] died waiting for chopstick
+[95] died waiting for chopstick
+[done] 24 finished eating
+[64] died waiting for chopstick
+[done] 38 finished eating
+[18] died waiting for chopstick
+[done] 90 finished eating
+[29] died waiting for chopstick
+[25] died waiting for chopstick
+[done] 3 finished eating
+[93] died waiting for chopstick
+[44] died waiting for chopstick
+[done] 81 finished eating
+[50] died waiting for chopstick
+[62] died waiting for chopstick
+[91] died waiting for chopstick
+[11] died waiting for chopstick
+[23] died waiting for chopstick
+[52] died waiting for chopstick
+[85] died waiting for chopstick
+[61] died waiting for chopstick
+[41] died waiting for chopstick
+[35] died waiting for chopstick
+[7] died waiting for chopstick
+[42] died waiting for chopstick
+[55] died waiting for chopstick
+[20] died waiting for chopstick
+[13] died waiting for chopstick
+[75] died waiting for chopstick
+[22] died waiting for chopstick
+[19] died waiting for chopstick
+[98] died waiting for chopstick
+[6] died waiting for chopstick
+
+hanged

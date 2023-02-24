@@ -2,21 +2,12 @@ Code.require_file("chopstick.ex")
 Code.require_file("philosopher.ex")
 
 defmodule Dinner do
-  def start(), do: spawn(fn -> init() end)
+  def start(chopsticks, philosophers), do: spawn(fn -> init(chopsticks, philosophers) end)
 
-  def init() do
-    c1 = Chopstick.start()
-    c2 = Chopstick.start()
-    c3 = Chopstick.start()
-    c4 = Chopstick.start()
-    c5 = Chopstick.start()
-    ctrl = self()
-    Philosopher.start(5, c1, c2, :arendt, ctrl, 5)
-    Philosopher.start(5, c2, c3, :hypatia, ctrl, 5)
-    Philosopher.start(5, c3, c4, :simone, ctrl, 5)
-    Philosopher.start(5, c4, c5, :elisabeth, ctrl, 5)
-    Philosopher.start(5, c5, c1, :ayn, ctrl, 5)
-    wait(5, [c1, c2, c3, c4, c5])
+  def init(chopsticks, philosophers) do
+    c = Enum.map(0..chopsticks, fn _ -> Chopstick.start() end)
+    Enum.map(0..philosophers, fn n -> Philosopher.start(5, Enum.at(c, rem(n, chopsticks)), Enum.at(c, rem(n + 1, chopsticks)), n, self(), 5) end)
+    wait(philosophers, c)
   end
 
   def wait(0, chopsticks) do

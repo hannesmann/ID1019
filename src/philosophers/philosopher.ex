@@ -19,8 +19,8 @@ defmodule Philosopher do
     Chopstick.send_request(left)
     Chopstick.send_request(right)
 
-    left_waiter = Chopstick.get_wait_function(left, 1000)
-    right_waiter = Chopstick.get_wait_function(right, 1000)
+    left_waiter = Chopstick.get_wait_function(left, 2500)
+    right_waiter = Chopstick.get_wait_function(right, 2500)
 
     waiting({hunger, left, right, name, ctrl, strength, {left_waiter, right_waiter}})
   end
