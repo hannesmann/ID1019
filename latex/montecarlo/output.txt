@@ -1,0 +1,64 @@
+hannes@desktop ~/Dev/ID1019 (main *) $ ./run-project.sh montecarlo
+Available:
+  LaTeX:
+    build_pdflatex [name]
+    all_pdflatex
+    build_tectonic [name]
+    all_tectonic
+
+  Elixir:
+    derivative (Derivative calculator)
+    environment (List and tree map)
+    math (Math evaluator)
+    hanoi (Recursive Towers of Hanoi)
+    hof (Higher-order functions)
+    advent07 (Advent of Code 2022 Day 7)
+    advent16 (Advent of Code 2022 Day 16)
+    montecarlo (Monte Carlo and Pi)
+
+Running 'montecarlo':
+Simulator.rounds(1000, 1000, ...)
+round 100 - pi: 3.147080000000 abs error: 0.005487346410
+round 200 - pi: 3.145100000000 abs error: 0.003507346410
+round 300 - pi: 3.143853333333 abs error: 0.002260679744
+round 400 - pi: 3.141210000000 abs error: 0.000382653590
+round 500 - pi: 3.138352000000 abs error: 0.003240653590
+round 600 - pi: 3.139153333333 abs error: 0.002439320256
+round 700 - pi: 3.139891428571 abs error: 0.001701225018
+round 800 - pi: 3.139835000000 abs error: 0.001757653590
+round 900 - pi: 3.139413333333 abs error: 0.002179320256
+round 1000 - pi: 3.139584000000 abs error: 0.002008653590
+
+Simulator.rounds_doubling(24, ...)
+round (doubling) 1 - pi: 2.000000000000 abs error: 1.141592653590
+round (doubling) 2 - pi: 2.000000000000 abs error: 1.141592653590
+round (doubling) 3 - pi: 1.500000000000 abs error: 1.641592653590
+round (doubling) 4 - pi: 2.250000000000 abs error: 0.891592653590
+round (doubling) 5 - pi: 2.625000000000 abs error: 0.516592653590
+round (doubling) 6 - pi: 3.000000000000 abs error: 0.141592653590
+round (doubling) 7 - pi: 3.000000000000 abs error: 0.141592653590
+round (doubling) 8 - pi: 3.078125000000 abs error: 0.063467653590
+round (doubling) 9 - pi: 3.140625000000 abs error: 0.000967653590
+round (doubling) 10 - pi: 3.140625000000 abs error: 0.000967653590
+round (doubling) 11 - pi: 3.117187500000 abs error: 0.024405153590
+round (doubling) 12 - pi: 3.155273437500 abs error: 0.013680783910
+round (doubling) 13 - pi: 3.159179687500 abs error: 0.017587033910
+round (doubling) 14 - pi: 3.142089843750 abs error: 0.000497190160
+round (doubling) 15 - pi: 3.144897460938 abs error: 0.003304807348
+round (doubling) 16 - pi: 3.149719238281 abs error: 0.008126584691
+round (doubling) 17 - pi: 3.146240234375 abs error: 0.004647580785
+round (doubling) 18 - pi: 3.139984130859 abs error: 0.001608522730
+round (doubling) 19 - pi: 3.140609741211 abs error: 0.000982912379
+round (doubling) 20 - pi: 3.141197204590 abs error: 0.000395449000
+round (doubling) 21 - pi: 3.142551422119 abs error: 0.000958768529
+round (doubling) 22 - pi: 3.142017364502 abs error: 0.000424710912
+round (doubling) 23 - pi: 3.141885280609 abs error: 0.000292627019
+round (doubling) 24 - pi: 3.141875982285 abs error: 0.000283328695
+round (doubling) 25 - pi: 3.141757369041 abs error: 0.000164715452
+round (doubling) 26 - pi: 3.141656696796 abs error: 0.000064043207
+
+3.141093153121447
+
+real    0m11.020s
+user    0m11.111s
+sys     0m0.053s
