@@ -17,7 +17,7 @@ IO.inspect(Train.split(test_train, :b), label: "Train.split(test_train, :b)")
 IO.inspect(Train.split(test_train, :a), label: "Train.split(test_train, :a)")
 IO.inspect(Train.split(test_train, :z), label: "Train.split(test_train, :z)")
 IO.inspect(Train.main([:a, :b, :c, :d], 3), label: "Train.main([:a, :b, :c, :d], 3)")
-IO.inspect(Train.main([:a, :b, :c, :d], 5), label: "Train.main([:a, :b, :c, :d], 3)")
+IO.inspect(Train.main([:a, :b, :c, :d], 5), label: "Train.main([:a, :b, :c, :d], 5)")
 
 IO.puts("")
 
