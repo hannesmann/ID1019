@@ -20,12 +20,139 @@
 \section*{Introduction}
 
 This is a report for the seventh assignment in the course ID1019 Programming II.
-In this assignment, ...
+In this assignment, a program should be created that can compute the moves required to shunt a train into a specific position.
 
-The implementation was done in Elixir. A bash script is included in the repository that can be used to run the program: \mintinline{text}{./run-project.sh train}.
+The implementation was done in Elixir. A bash script is included in the repository that can be used to run the program: \mintinline[breaklines]{text}{./run-project.sh train}.
 
 The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/train}{GitHub}.
 
-\section*{The Monte Carlo method}
+\section*{The problem}
+
+Train shunting is the process of sorting different wagons of a train into a specific order.
+We have three tracks, one "main" track where the train should be located at the end and two auxiliary tracks we can use when sorting.
+
+The tracks are represented by a tuple in Elixir of the format \mintinline[breaklines]{text}{{main, one, two}} where all elements are a train of the format \mintinline[breaklines]{text}{[:a, :b, :c, ...]}.
+Every atom in the list is a wagon and these wagons are what will be rearranged to achieve the specified order at the end.
+
+\subsection*{List manipulation}
+
+To be able to sort the train we need to be able to manipulate the lists that are given to us.
+In this exercise, no built in Elixir modules should be used, so instead these functions were defined in a module called \mintinline[breaklines]{text}{Train}:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+take(list, n)
+# Take n elements from the beginning of the list
+drop(list, n)
+# Drop n elements from the beginning of the list
+append(a, b)
+# Append list b to list a
+member(list, y)
+# Returns true if y is an element of list
+position(list, y)
+# Returns the position of y in list (starting from 1), or :nomatch
+split(list, y)
+# Returns a tuple of {before, after} split between element y
+main(list, n)
+# Takes up to n elements from the list
+# Returns a tuple of {k, remain, take} where k is the number of "missing" wagons in take
+\end{minted}
+
+The function \mintinline[breaklines]{text}{main} was implemented using recursion and checking if it was possible to keep taking elements from the list or not.
+If no more elements can be taken, the first element is added to \mintinline[breaklines]{text}{remain}, otherwise the element is added to \mintinline[breaklines]{text}{take}.
+
+\subsection*{Applying moves}
+
+Moves are applied with a function called \mintinline[breaklines]{text}{single}. This uses \mintinline[breaklines]{text}{Train.main} to take from either main, one or two.
+
+If the argument is positive, elements are moved from main to one or two, otherwise elements are moved from one or two to main.
+
+\subsection*{Finding the best moves}
+
+The best moves are found with a function called \mintinline[breaklines]{text}{find}. This moves from one and two, then back to main.
+This creates a lot of redundant moves so an optimized function \mintinline[breaklines]{text}{few} was created that looks like this:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def few([], []) do [] end
+def few(xs, [y | ys]) do
+  {hs, ts} = Train.split(xs, y)
+
+  if length(hs) == 0 do
+    Train.append([], few(Train.append(hs, ts), ys))
+  else
+    moves = [{:one, length(ts) + 1}, {:two, length(hs)}, {:one, -length(ts) - 1}, {:two, -length(hs)}]
+    Train.append(moves, few(Train.append(hs, ts), ys))
+  end
+end
+\end{minted}
+
+If we only need to move one section back and forth, it has no effect, so we can skip appending moves in that case.
+
+\subsection*{Compressing the result further}
+
+We can optimize even more by applying some simple rules:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def rules([]) do [] end
+def rules([head | tail]) do
+  case head do
+    {_, 0} -> rules(tail)
+    {:one, n} ->
+      case tail do
+        [{:one, m} | rest] -> [{:one, n + m} | rules(rest)]
+        _ -> [head | rules(tail)]
+      end
+    {:two, n} ->
+      case tail do
+        [{:two, m} | rest] -> [{:two, n + m} | rules(rest)]
+        _ -> [head | rules(tail)]
+      end
+  end
+end
+
+def compress(ms) do
+  ns = rules(ms)
+  if ns == ms do
+    ms
+  else
+    compress(ns)
+  end
+end
+\end{minted}
+
+Rules are applied recursively until no more changes can be made.
+
+\section*{Result}
+
+Testing on the examples in the course material gives the following results:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+test_train: [:b, :c, :a, :d]
+Train.take(test_train, 2): [:b, :c]
+Train.drop(test_train, 2): [:a, :d]
+Train.append(test_train, [:e, :f]): [:b, :c, :a, :d, :e, :f]
+Train.member(test_train, :b): true
+Train.member(test_train, :x): false
+Train.position(test_train, :b): 1
+Train.position(test_train, :a): 3
+Train.position(test_train, :x): :nomatch
+Train.split(test_train, :b): {[], [:c, :a, :d]}
+Train.split(test_train, :a): {[:b, :c], [:d]}
+Train.split(test_train, :z): {[:b, :c, :a, :d], []}
+Train.main([:a, :b, :c, :d], 3): {0, [:a], [:b, :c, :d]}
+Train.main([:a, :b, :c, :d], 3): {1, [], [:a, :b, :c, :d]}
+
+Moves.sequence(...): [
+  {[:a, :b], [], []},
+  {[:a], [:b], []},
+  {[], [:b], [:a]},
+  {[:b], [], [:a]},
+  {[:b, :a], [], []}
+]
+
+Shunt.find(...): [one: 1, two: 1, one: -1, two: -1, one: 1, two: 0, one: -1, two: 0]
+Shunt.few(...): [one: 1, two: 1, one: -1, two: -1]
+
+Shunt.compress([{:two,-1},{:one,1},{:one,-1},{:two,1}]): []
+\end{minted}
 
 \end{document}
