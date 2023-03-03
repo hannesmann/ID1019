@@ -42,7 +42,6 @@ defmodule Train do
     {[head | b], a}
   end
 
-
   def main([], n) do {n, [], []} end
   def main(remain, 0) do {0, remain, []} end
   def main([head | tail], n) do

@@ -6,6 +6,7 @@ defmodule Shunt do
 
   def find(xs, [y | ys]) do
     {hs, ts} = Train.split(xs, y)
+
     moves = [{:one, length(ts) + 1}, {:two, length(hs)}, {:one, -length(ts) - 1}, {:two, -length(hs)}]
     Train.append(moves, find(Train.append(hs, ts), ys))
   end
