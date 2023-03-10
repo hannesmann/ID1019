@@ -1,0 +1,219 @@
+\documentclass[a4paper,11pt]{article}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{minted}
+\usepackage{hyperref}
+
+\usepackage{amsmath}
+
+\begin{document}
+
+\title{
+    \textbf{Huffman coding}
+}
+\author{Hannes Mann}
+\date{2023-03-10}
+
+\maketitle
+
+\section*{Introduction}
+
+This is a report for the eight assignment in the course ID1019 Programming II.
+In this assignment, a program should be created that implements Huffman encoding and decoding. Some benchmarks should also be run to determine how the algorithm performs with different inputs.
+
+The implementation was done in Elixir. A bash script is included in the repository that can be used to run the program: \mintinline[breaklines]{text}{./run-project.sh huffman}.
+
+The source code can be found at: \href{https://github.com/hannesmann/ID1019/tree/main/src/huffman}{GitHub}.
+
+\section*{The algorithm}
+
+Huffman coding is a way to encode data using as few bits as possible.
+This is accomplished by analysing a chosen set of data (it could be the data we want to encode, or a more generic data set such as a long English text)
+and keeping track of how often different values appear.
+This gives us a Huffman tree where the most frequent values appear at the top of the tree.
+
+Walking down the tree gives us a compressed value that is guaranteed to be unique and identifiable. For example, if we have to walk left, left, right to encode "A" then "A" will be represented by the bits 001.
+
+\subsection*{Frequency analysis}
+
+The first step in Huffman coding is analysing the data and determining how often different values appear. For this report all values are Unicode characters.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+# Init stage
+def freq(sample) do
+  freq(sample, %{})
+end
+
+# End stage
+def freq([], weights) do
+  weights
+end
+
+# Search stage
+def freq([head | tail], weights) do
+  current = Map.get(weights, head, 0)
+  freq(tail, Map.put(weights, head, current + 1))
+end
+\end{minted}
+
+I chose to use the built-in Elixir map to represent a mapping from value to frequency.
+We always try to retrieve an existing frequency and fall back to 0 if this is the first time a particular character appears.
+
+\subsection*{Building a Huffman tree}
+
+Now that we have weights for every character we can build the tree by starting from the bottom (the lowest frequency character)
+and creating a new node where the left and right branches are leaves containing the two lowest characters.
+Applying this step recursively will eventually give us a complete Huffman tree.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def build_huffman([{last, _}], []) do
+  # We should only have one element left in the list
+  last
+end
+
+def build_huffman([{c1, f1}, {c2, f2}], rest) do
+  list = rest ++ [{{c1, c2}, f1 + f2}]
+  # Apply sorting recursively
+  sorted_list = Enum.sort_by(list, fn {_, v} -> v end)
+
+  build_huffman(Enum.take(sorted_list, 2), Enum.drop(sorted_list, 2))
+end
+
+# The format of the tree is: {node|char, node|char}
+def huffman(weights) do
+  # Start by converting the map to a format [{a, 1}, {b, 2}, etc...]
+  list = Map.to_list(weights)
+  # Let lowest frequency weights be ordered first
+  sorted_list = Enum.sort_by(list, fn {_, v} -> v end)
+
+  build_huffman(Enum.take(sorted_list, 2), Enum.drop(sorted_list, 2))
+end
+\end{minted}
+
+Frequencies aren't saved in the tree (these aren't important for encoding and decoding).
+The last step will give us the root node in the format \mintinline[breaklines]{text}{{{left, right}, freq}} so we have to take out the node and ignore the frequency.
+
+\subsection*{Compression}
+
+With the Huffman tree done it's easy to encode (compress) data.
+We start by creating an encoding table which is a mapping of every character in the tree to its unique position in the tree.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def encode_table({l, r}) do
+  left = Enum.map(encode_table(l), fn {c, p} -> {c, [0] ++ p} end)
+  right = Enum.map(encode_table(r), fn {c, p} -> {c, [1] ++ p} end)
+
+  Map.new(left ++ right)
+end
+
+def encode_table(c) do
+  [{c, []}]
+end
+\end{minted}
+
+This gives us a series of lists which represent the bits that should be emitted for a specific character. It will have the format \mintinline[breaklines]{text}{%{a => [0, 0], b => [0, 1], etc...}}.
+All that needs to be done to compress a specific string is to iterate through each character and combine the lists into a larger list.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def encode([], _) do [] end
+
+def encode([last], table) do
+  Map.get(table, last)
+end
+
+def encode([head | tail], table) do
+  Map.get(table, head) ++ encode(tail, table)
+end
+\end{minted}
+
+\subsection*{Decompression}
+
+Decompression is slightly more complicated because of two issues:
+
+\begin{itemize}
+	\item Elixir's map can't use lists as keys.
+	\item When iterating through compressed data, we need to search all possible bit patterns because the length isn't given to us explicitly.
+\end{itemize}
+
+The first is easy to solve by manually searching through a list but the second one requires more consideration.
+We know that every bit pattern in the tree is unique (because every branch that ends in a leaf stops at that point) but we need to find an error condition so we know when to stop searching.
+
+We start by creating a decoding table which is an inverted encoding table. This isn't represented by a map but instead by a list which we will search through manually:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def decode_table({l, r}) do
+  left = Enum.map(decode_table(l), fn {p, c} -> {[0] ++ p, c} end)
+  right = Enum.map(decode_table(r), fn {p, c} -> {[1] ++ p, c} end)
+
+  # Don't convert this one to a Map, get() does not work on arrays
+  left ++ right
+end
+
+def decode_table(c) do
+  [{[], c}]
+end
+\end{minted}
+
+What we can do now is find the range of possible bit patterns.
+We will always start at assuming the bit pattern is one bit long (this isn't always true but we will skip over this if no bit patterns are possible)
+and find the longest list in the decoding table as our end point $max$.
+When decoding we search every pattern from $1 \ldots max$.
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def decode([], _, _) do [] end
+def decode(seq, table, max) do
+  {char, rest} = decode_char(seq, 1, max, table)
+  [char | decode(rest, table, max)]
+ end
+
+def decode([], _) do [] end
+def decode(seq, table) do
+  {max_key_length, _} = Enum.max_by(table, fn {k, _} -> length(k) end)
+  decode(seq, table, max_key_length)
+end
+\end{minted}
+
+\mintinline[breaklines]{text}{decode_char} searches through the decoding table for a possible decompressed value and returns \mintinline[breaklines]{text}{:error} if none is found:
+
+\begin{minted}[tabsize=2,fontsize=\footnotesize,breaklines]{elixir}
+def decode_char(seq, n, max, table) do
+  {code, rest} = Enum.split(seq, n)
+
+  if n > max do
+    {:error, rest}
+  else
+    case Enum.find(table, :error, fn {k, _} -> k == code end) do
+      :error -> decode_char(seq, n + 1, max, table)
+      {_, v} -> {v, rest}
+    end
+  end
+end
+\end{minted}
+
+\section*{Benchmarking}
+
+Benchmarking is done by measuring the time it takes to encode and decode the novel Kallocain. The text is used as the input for our Huffman tree but this step isn't included in the benchmark.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{n} & \textbf{encode} & \textbf{decode} \\
+\hline
+  318997 & 48000 $\mu$ s & 1300000 $\mu$ s \\
+  159498 & 13000 $\mu$ s & 640000 $\mu$ s \\
+  79749 & 6000 $\mu$ s & 320000 $\mu$ s \\
+  39874 & 2000 $\mu$ s & 160000 $\mu$ s \\
+  19937 & 1300 $\mu$ s & 81000 $\mu$ s \\
+  9968 & 640 $\mu$ s & 39000 $\mu$ s \\
+\hline
+\end{tabular}
+\caption{Execution time for encoding and decoding $n$ characters.}
+\label{tab:table1}
+\end{table}
+
+Encoding is a lot faster than decoding and this makes sense since encoding is just a single lookup in a table while decoding needs to search through many bit patterns for every character.
+Encoding in this case is an $O(n \log n)$ operation since it requires $n$ lookups in a hash map and decoding is an $O(n^2)$ operations since it needs search $m$ times in a list of size $n$.
+
+\end{document}

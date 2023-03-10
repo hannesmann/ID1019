@@ -29,7 +29,6 @@ defmodule Huffman do
   end
 
   # The format of the tree is: {node|char, node|char}
-  # where node is a tuple of left and right branch, and char is a single character
   def huffman(weights) do
     # Start by converting the map to a format [{a, 1}, {b, 2}, etc...]
     list = Map.to_list(weights)
@@ -67,6 +66,8 @@ defmodule Huffman do
   def decode_table(c) do
     [{[], c}]
   end
+
+  def encode([], _) do [] end
 
   def encode([last], table) do
     Map.get(table, last)
