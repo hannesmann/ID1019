@@ -107,6 +107,12 @@ function train {
   time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
 }
 
+echo "    huffman (Huffman coding)"
+function huffman {
+  cd src/huffman
+  time nice -n -5 elixir main.exs $elixir_args $1 $2 $3 $4 $5
+}
+
 # https://unix.stackexchange.com/questions/217292/execute-only-if-it-is-a-bash-function
 if [[ $(type -t "$1") == "function" ]]; then
     echo ""
