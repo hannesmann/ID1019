@@ -82,23 +82,22 @@ defmodule Huffman do
     if n > max do
       {:error, rest}
     else
-      possible_pairs = Enum.filter(table, fn {k, _} -> length(k) == n end)
-      result = Enum.find(possible_pairs, :error, fn {k, _} -> k == code end)
-
-      case result do
+      case Enum.find(table, :error, fn {k, _} -> k == code end) do
         :error -> decode_char(seq, n + 1, max, table)
         {_, v} -> {v, rest}
       end
     end
   end
 
-  def decode([], _) do
-    []
-  end
+  def decode([], _, _) do [] end
+  def decode(seq, table, max) do
+    {char, rest} = decode_char(seq, 1, max, table)
+    [char | decode(rest, table, max)]
+   end
 
+  def decode([], _) do [] end
   def decode(seq, table) do
     {max_key_length, _} = Enum.max_by(table, fn {k, _} -> length(k) end)
-    {char, rest} = decode_char(seq, 1, max_key_length, table)
-    [char | decode(rest, table)]
+    decode(seq, table, max_key_length)
   end
 end

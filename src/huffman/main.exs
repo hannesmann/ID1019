@@ -1,4 +1,5 @@
 Code.require_file("huffman.ex")
+Code.require_file("benchmark.ex")
 
 defmodule Tests do
   def sample() do
@@ -14,18 +15,23 @@ defmodule Tests do
   end
 end
 
-freq = Huffman.freq(Tests.sample())
-IO.inspect(freq, label: "freq")
+benchmark = IO.gets("Run benchmark? (Y/N) ")
+if String.downcase(benchmark) == "y\n" do
+  HuffmanBenchmark.run()
+else
+  freq = Huffman.freq(Tests.sample())
+  IO.inspect(freq, label: "freq")
 
-tree = Huffman.tree(Tests.sample())
-IO.inspect(tree, label: "tree")
+  tree = Huffman.tree(Tests.sample())
+  IO.inspect(tree, label: "tree")
 
-encode_table = Huffman.encode_table(tree)
-IO.inspect(encode_table, label: "encode_table")
+  encode_table = Huffman.encode_table(tree)
+  IO.inspect(encode_table, label: "encode_table")
 
-encoded = Huffman.encode(Tests.text(), encode_table)
-IO.inspect(encoded, label: "Tests.text() encoded")
+  encoded = Huffman.encode(Tests.text(), encode_table)
+  IO.inspect(encoded, label: "Tests.text() encoded")
 
-decode_table = Huffman.decode_table(tree)
-decoded = Huffman.decode(encoded, decode_table)
-IO.inspect(decoded, label: "Tests.text() decoded")
+  decode_table = Huffman.decode_table(tree)
+  decoded = Huffman.decode(encoded, decode_table)
+  IO.inspect(decoded, label: "Tests.text() decoded")
+end

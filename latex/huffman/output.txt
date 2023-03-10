@@ -1,0 +1,102 @@
+hannes@desktop ~/Dev/ID1019 (main *) $ ./run-project.sh huffman
+Available:
+  LaTeX:
+    build_pdflatex [name]
+    all_pdflatex
+    build_tectonic [name]
+    all_tectonic
+
+  Elixir:
+    derivative (Derivative calculator)
+    environment (List and tree map)
+    math (Math evaluator)
+    hanoi (Recursive Towers of Hanoi)
+    hof (Higher-order functions)
+    advent07 (Advent of Code 2022 Day 7)
+    advent16 (Advent of Code 2022 Day 16)
+    montecarlo (Monte Carlo and Pi)
+    philosophers (Philosophers and Concurrency)
+    train (Train shunting)
+    huffman (Huffman coding)
+
+Running 'huffman':
+Run benchmark? (Y/N) y
+Encoding and decoding kallocain.txt (5 repeats for every benchmark)
+
+n=318997:
+  encode avg: 48445.4 microseconds
+  decode avg: 1315697.8 microseconds
+
+n=159498:
+  encode avg: 13740.0 microseconds
+  decode avg: 645938.6 microseconds
+
+n=79749:
+  encode avg: 6038.0 microseconds
+  decode avg: 320359.2 microseconds
+
+n=39874:
+  encode avg: 2053.2 microseconds
+  decode avg: 159857.4 microseconds
+
+n=19937:
+  encode avg: 1338.8 microseconds
+  decode avg: 81327.8 microseconds
+
+n=9968:
+  encode avg: 648.8 microseconds
+  decode avg: 39729.6 microseconds
+
+n=4984:
+  encode avg: 235.4 microseconds
+  decode avg: 19684.0 microseconds
+
+n=2492:
+  encode avg: 117.6 microseconds
+  decode avg: 9884.2 microseconds
+
+n=1246:
+  encode avg: 57.0 microseconds
+  decode avg: 4940.6 microseconds
+
+n=623:
+  encode avg: 27.0 microseconds
+  decode avg: 2478.2 microseconds
+
+n=311:
+  encode avg: 13.2 microseconds
+  decode avg: 1245.0 microseconds
+
+n=155:
+  encode avg: 6.4 microseconds
+  decode avg: 629.4 microseconds
+
+n=77:
+  encode avg: 3.0 microseconds
+  decode avg: 312.8 microseconds
+
+n=38:
+  encode avg: 1.6 microseconds
+  decode avg: 163.8 microseconds
+
+n=19:
+  encode avg: 0.8 microseconds
+  decode avg: 94.4 microseconds
+
+n=9:
+  encode avg: 0.4 microseconds
+  decode avg: 41.4 microseconds
+
+n=4:
+  encode avg: 0.2 microseconds
+  decode avg: 25.6 microseconds
+
+n=2:
+  encode avg: 0.0 microseconds
+  decode avg: 17.4 microseconds
+
+Done
+
+real    0m14.731s
+user    0m13.645s
+sys     0m0.237s
